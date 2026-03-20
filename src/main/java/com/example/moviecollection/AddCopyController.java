@@ -4,42 +4,34 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
-
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class AddCopyController {
 
-    @FXML
-    private TableView<Pelicula> movieTableView;
-    @FXML
-    private TableColumn<Pelicula, String> titleColumn;
-    @FXML
-    private TableColumn<Pelicula, String> directorColumn;
-    @FXML
-    private TableColumn<Pelicula, Integer> yearColumn;
+    @FXML private TableView<Pelicula> movieTable;
+    @FXML private TableColumn<Pelicula, String> titleColumn;
+    @FXML private TableColumn<Pelicula, String> directorColumn;
+    @FXML private TableColumn<Pelicula, Integer> yearColumn;
+    @FXML private TableColumn<Pelicula, String> genreColumn;
 
     private Usuario usuario;
-    private MovieController movieController;
+    private ObservableList<Pelicula> listaPeliculas = FXCollections.observableArrayList();
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
 
-    public void setMovieController(MovieController movieController) {
-        this.movieController = movieController;
-    }
-
     @FXML
-    public void initialize() {
+    private void initialize() {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         directorColumn.setCellValueFactory(new PropertyValueFactory<>("director"));
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("ano"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("anoEstreno"));
+        genreColumn.setCellValueFactory(new PropertyValueFactory<>("genero"));
         loadMovies();
     }
 
@@ -47,8 +39,9 @@ public class AddCopyController {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
             TypedQuery<Pelicula> query = em.createQuery("SELECT p FROM Pelicula p", Pelicula.class);
-            ObservableList<Pelicula> observablePeliculas = FXCollections.observableArrayList(query.getResultList());
-            movieTableView.setItems(observablePeliculas);
+            List<Pelicula> resultados = query.getResultList();
+            listaPeliculas.setAll(resultados);
+            movieTable.setItems(listaPeliculas);
         } finally {
             em.close();
         }
@@ -56,32 +49,17 @@ public class AddCopyController {
 
     @FXML
     void addCopy(ActionEvent event) {
-        Pelicula selectedPelicula = movieTableView.getSelectionModel().getSelectedItem();
-        if (selectedPelicula != null) {
+        Pelicula selectedMovie = movieTable.getSelectionModel().getSelectedItem();
+        if (selectedMovie != null) {
             EntityManager em = DbManager.getEmf().createEntityManager();
             try {
                 em.getTransaction().begin();
-                Copia newCopy = new Copia();
-                newCopy.setUsuario(usuario);
-                newCopy.setPelicula(selectedPelicula);
-                newCopy.setFormato(""); // Set default value
-                newCopy.setUbicacion(""); // Set default value
+                Copia newCopy = new Copia(selectedMovie, usuario, "DVD", "Estantería"); // Ejemplo
                 em.persist(newCopy);
                 em.getTransaction().commit();
-
-                movieController.refreshCopies();
-
-                Stage stage = (Stage) movieTableView.getScene().getWindow();
-                stage.close();
             } finally {
                 em.close();
             }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No selection");
-            alert.setHeaderText("No movie selected");
-            alert.setContentText("Please select a movie from the table.");
-            alert.showAndWait();
         }
     }
 }

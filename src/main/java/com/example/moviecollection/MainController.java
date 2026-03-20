@@ -28,10 +28,13 @@ public class MainController {
 
     @FXML
     private void initialize() {
-        movieTitleColumn.setCellValueFactory(new PropertyValueFactory<>("pelicula"));
+        // Cambia esto para que muestre el título de la película
+        movieTitleColumn.setCellValueFactory(cellData ->
+                new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPelicula().getTitulo())
+        );
+
         formatColumn.setCellValueFactory(new PropertyValueFactory<>("formato"));
         locationColumn.setCellValueFactory(new PropertyValueFactory<>("ubicacion"));
-
     }
 
     public void setUsuario(Usuario usuario) {
@@ -46,7 +49,8 @@ public class MainController {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
             Usuario managedUsuario = em.merge(this.usuario);
-            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.propietario = :usuario", Copia.class);
+            // Cambia 'c.propietario' por 'c.usuario'
+            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.usuario = :usuario", Copia.class);
             query.setParameter("usuario", managedUsuario);
             List<Copia> resultados = query.getResultList();
             listaCopias.setAll(resultados);

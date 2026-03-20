@@ -59,7 +59,7 @@ public class CopyController {
     }
 
     public void initialize() {
-        formatColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFormato()));
+        formatColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSoporte()));
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUbicacion()));
         ownerColumn.setCellValueFactory(cellData -> {
             EntityManager em = DbManager.getEmf().createEntityManager();

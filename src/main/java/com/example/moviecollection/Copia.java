@@ -15,12 +15,18 @@ public class Copia implements Serializable {
     private long id_usuario;
     private String estado;
     private String soporte;
+    private String ubicacion;
 
-    public Copia(long id_pelicula, long id_usuario, String estado, String soporte) {
+    public Copia() {
+        // Default constructor
+    }
+
+    public Copia(long id_pelicula, long id_usuario, String estado, String soporte, String ubicacion) {
         this.id_pelicula = id_pelicula;
         this.id_usuario = id_usuario;
         this.estado = estado;
         this.soporte = soporte;
+        this.ubicacion = ubicacion;
     }
 
     public long getId() {
@@ -57,5 +63,13 @@ public class Copia implements Serializable {
 
     public void setSoporte(String soporte) {
         this.soporte = soporte;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
     }
 }

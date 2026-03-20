@@ -59,7 +59,7 @@ public class EditCopyController {
         this.pelicula = pelicula;
 
         if (copia != null) {
-            formatField.setText(copia.getFormato());
+            formatField.setText(copia.getSoporte());
             locationField.setText(copia.getUbicacion());
             EntityManager em = DbManager.getEmf().createEntityManager();
             try {
@@ -81,7 +81,7 @@ public class EditCopyController {
             copia.setId_pelicula(pelicula.getId());
         }
 
-        copia.setFormato(formatField.getText());
+        copia.setSoporte(formatField.getText());
         copia.setUbicacion(locationField.getText());
         copia.setId_usuario(ownerComboBox.getValue().getId());
 

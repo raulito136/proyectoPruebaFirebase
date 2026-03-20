@@ -49,8 +49,8 @@ public class MovieController {
     private void loadCopies() {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
-            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.id_usuario = :userId", Copia.class);
-            query.setParameter("userId", usuario.getId());
+            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.usuario = :user", Copia.class);
+            query.setParameter("user", usuario);
             ObservableList<Copia> observableCopias = FXCollections.observableArrayList(query.getResultList());
             movieTableView.setItems(observableCopias);
         } finally {
@@ -80,8 +80,6 @@ public class MovieController {
             stage.setTitle("Add Copy");
             stage.setScene(new Scene(root, 400, 350));
             stage.showAndWait();
-
-            loadCopies();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,8 +109,6 @@ public class MovieController {
             stage.setTitle("Edit Copy");
             stage.setScene(new Scene(root, 400, 250));
             stage.showAndWait();
-
-            loadCopies();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -62,8 +62,10 @@ public class AddCopyController {
             try {
                 em.getTransaction().begin();
                 Copia newCopy = new Copia();
-                newCopy.setId_usuario(usuario.getId());
-                newCopy.setId_pelicula(selectedPelicula.getId());
+                newCopy.setUsuario(usuario);
+                newCopy.setPelicula(selectedPelicula);
+                newCopy.setFormato(""); // Set default value
+                newCopy.setUbicacion(""); // Set default value
                 em.persist(newCopy);
                 em.getTransaction().commit();
 
@@ -76,7 +78,7 @@ public class AddCopyController {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No selection");
+            alert.setTitle("No selection
             alert.setHeaderText("No movie selected");
             alert.setContentText("Please select a movie from the table.");
             alert.showAndWait();

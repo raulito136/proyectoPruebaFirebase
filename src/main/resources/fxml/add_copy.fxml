@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -19,6 +20,9 @@
             <TableColumn fx:id="genreColumn" text="Género"/>
         </columns>
     </TableView>
+
+    <ComboBox fx:id="formatComboBox" promptText="Formato"/>
+    <ComboBox fx:id="supportComboBox" promptText="Soporte"/>
 
     <Button text="Añadir Copia" onAction="#addCopy"/>
 </VBox>

@@ -21,20 +21,21 @@ public class MainController {
     @FXML private TableView<Copia> copyTable;
     @FXML private TableColumn<Copia, String> movieTitleColumn;
     @FXML private TableColumn<Copia, String> formatColumn;
-    @FXML private TableColumn<Copia, String> locationColumn;
+    @FXML private TableColumn<Copia, Soporte> supportColumn;
+    @FXML private TableColumn<Copia, Integer> quantityColumn;
+    @FXML private MenuBar menuBar;
 
     private Usuario usuario;
     private ObservableList<Copia> listaCopias = FXCollections.observableArrayList();
 
     @FXML
     private void initialize() {
-        // Cambia esto para que muestre el título de la película
         movieTitleColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPelicula().getTitulo())
         );
-
         formatColumn.setCellValueFactory(new PropertyValueFactory<>("formato"));
-        locationColumn.setCellValueFactory(new PropertyValueFactory<>("ubicacion"));
+        supportColumn.setCellValueFactory(new PropertyValueFactory<>("soporte"));
+        quantityColumn.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
     }
 
     public void setUsuario(Usuario usuario) {
@@ -48,10 +49,8 @@ public class MainController {
     private void loadCopies() {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
-            Usuario managedUsuario = em.merge(this.usuario);
-            // Cambia 'c.propietario' por 'c.usuario'
             TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.usuario = :usuario", Copia.class);
-            query.setParameter("usuario", managedUsuario);
+            query.setParameter("usuario", usuario);
             List<Copia> resultados = query.getResultList();
             listaCopias.setAll(resultados);
             copyTable.setItems(listaCopias);
@@ -72,7 +71,25 @@ public class MainController {
             Stage stage = new Stage();
             stage.setTitle("Añadir Copia");
             stage.setScene(new Scene(root));
-            stage.show();
+            stage.showAndWait();
+            loadCopies();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void logout() {
+        try {
+            Stage stage = (Stage) menuBar.getScene().getWindow();
+            stage.close();
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Login");
+            loginStage.setScene(new Scene(root));
+            loginStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }

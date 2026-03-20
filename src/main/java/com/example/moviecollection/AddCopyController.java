@@ -4,9 +4,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -18,6 +21,8 @@ public class AddCopyController {
     @FXML private TableColumn<Pelicula, String> directorColumn;
     @FXML private TableColumn<Pelicula, Integer> yearColumn;
     @FXML private TableColumn<Pelicula, String> genreColumn;
+    @FXML private ComboBox<String> formatComboBox;
+    @FXML private ComboBox<Soporte> supportComboBox;
 
     private Usuario usuario;
     private ObservableList<Pelicula> listaPeliculas = FXCollections.observableArrayList();
@@ -32,6 +37,10 @@ public class AddCopyController {
         directorColumn.setCellValueFactory(new PropertyValueFactory<>("director"));
         yearColumn.setCellValueFactory(new PropertyValueFactory<>("anoEstreno"));
         genreColumn.setCellValueFactory(new PropertyValueFactory<>("genero"));
+
+        formatComboBox.setItems(FXCollections.observableArrayList("Formato 1", "Formato 2", "Formato 3"));
+        supportComboBox.setItems(FXCollections.observableArrayList(Soporte.values()));
+
         loadMovies();
     }
 
@@ -50,16 +59,15 @@ public class AddCopyController {
     @FXML
     void addCopy(ActionEvent event) {
         Pelicula selectedMovie = movieTable.getSelectionModel().getSelectedItem();
-        if (selectedMovie != null) {
-            EntityManager em = DbManager.getEmf().createEntityManager();
-            try {
-                em.getTransaction().begin();
-                Copia newCopy = new Copia(selectedMovie, usuario, "DVD", "Estantería"); // Ejemplo
-                em.persist(newCopy);
-                em.getTransaction().commit();
-            } finally {
-                em.close();
-            }
+        String selectedFormat = formatComboBox.getSelectionModel().getSelectedItem();
+        Soporte selectedSupport = supportComboBox.getSelectionModel().getSelectedItem();
+
+        if (selectedMovie != null && selectedFormat != null && selectedSupport != null) {
+            Copia newCopy = new Copia(selectedMovie, usuario, selectedFormat, selectedSupport);
+            DbManager.addCopia(newCopy);
+
+            Stage stage = (Stage) movieTable.getScene().getWindow();
+            stage.close();
         }
     }
 }

@@ -6,19 +6,33 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
+    public void start(Stage primaryStage) throws Exception {
+        // Inicializa el EntityManagerFactory al inicio de la aplicación
+        DbManager.getEmf();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/login.fxml"));
+        Parent root = loader.load();
         primaryStage.setTitle("Movie Collection");
-        primaryStage.setScene(new Scene(root, 300, 275));
+
+        Scene scene = new Scene(root, 350, 300);
+        // Aplicar la hoja de estilos a la escena de login
+        scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void stop() throws Exception {
+        // Cierra el EntityManagerFactory al salir de la aplicación
+        DbManager.closeEmf();
+        super.stop();
     }
 }

@@ -38,10 +38,10 @@ public class LoginController {
     private void login() {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
-            // Si no hay usuarios, crea uno por defecto
-            if (em.createQuery("SELECT u FROM User u", User.class).getResultList().isEmpty()) {
+            // If no users exist, create a default 'admin' user
+            if (em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList().isEmpty()) {
                 em.getTransaction().begin();
-                em.persist(new User("admin", "admin"));
+                em.persist(new Usuario("admin", "admin"));
                 em.getTransaction().commit();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -51,10 +51,10 @@ public class LoginController {
                 alert.showAndWait();
             }
 
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.username = :username AND u.password = :password", User.class);
-            query.setParameter("username", usernameField.getText());
-            query.setParameter("password", passwordField.getText());
-            User usuario = query.getSingleResult();
+            TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u WHERE u.nombre_usuario = :nombre_usuario AND u.contrasena = :contrasena", Usuario.class);
+            query.setParameter("nombre_usuario", usernameField.getText());
+            query.setParameter("contrasena", passwordField.getText());
+            Usuario usuario = query.getSingleResult();
 
             openMainWindow(usuario);
         } catch (NoResultException e) {
@@ -64,7 +64,7 @@ public class LoginController {
         }
     }
 
-    private void openMainWindow(User usuario) {
+    private void openMainWindow(Usuario usuario) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
             Parent root = loader.load();
@@ -73,7 +73,9 @@ public class LoginController {
             controller.setUsuario(usuario);
 
             Stage stage = (Stage) loginButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 400));
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,7 +86,9 @@ public class LoginController {
         try {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/register.fxml"));
-            stage.setScene(new Scene(root, 300, 275));
+            Scene scene = new Scene(root, 350, 300);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
             errorLabel.setText("Error al cargar la pantalla de registro.");

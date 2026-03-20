@@ -1,6 +1,5 @@
 package com.example.moviecollection;
 
-import com.example.moviecollection.model.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -43,7 +42,7 @@ public class RegisterController {
             }
 
             // Check if user already exists
-            TypedQuery<User> query = em.createQuery("SELECT u FROM User u WHERE u.username = :username", User.class);
+            TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u WHERE u.nombre_usuario = :username", Usuario.class);
             query.setParameter("username", username);
 
             if (!query.getResultList().isEmpty()) {
@@ -53,9 +52,7 @@ public class RegisterController {
 
             // Create and persist the new user
             em.getTransaction().begin();
-            User newUser = new User();
-            newUser.setUsername(username);
-            newUser.setPassword(password); // In a real app, hash the password!
+            Usuario newUser = new Usuario(username, password);
             em.persist(newUser);
             em.getTransaction().commit();
 
@@ -75,7 +72,9 @@ public class RegisterController {
         try {
             Stage stage = (Stage) usernameField.getScene().getWindow();
             Parent root = FXMLLoader.load(getClass().getResource("/fxml/login.fxml"));
-            stage.setScene(new Scene(root, 300, 275));
+            Scene scene = new Scene(root, 300, 275);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            stage.setScene(scene);
         } catch (IOException e) {
             e.printStackTrace();
             errorLabel.setText("Error al cargar la pantalla de login.");

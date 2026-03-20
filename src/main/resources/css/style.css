@@ -1,0 +1,90 @@
+/* Dark Theme for Movie Collection App */
+
+.root {
+    -fx-base: #2b2b2b;
+    -fx-background: #1e1e1e;
+    -fx-control-inner-background: #3c3f41;
+    -fx-control-inner-background-alt: #3c3f41;
+    -fx-light-text-color: #e0e0e0;
+    -fx-mid-text-color: #a0a0a0;
+    -fx-dark-text-color: #ffffff;
+    -fx-accent: #007bff;
+}
+
+.label {
+    -fx-text-fill: -fx-light-text-color;
+}
+
+.text-field, .password-field {
+    -fx-text-fill: -fx-light-text-color;
+    -fx-prompt-text-fill: -fx-mid-text-color;
+    -fx-font-size: 14px;
+    -fx-border-color: #555;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: -fx-accent;
+}
+
+.button {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-background-radius: 5;
+    -fx-padding: 10 20;
+}
+
+.button:hover {
+    -fx-background-color: derive(-fx-accent, 20%);
+}
+
+.button:pressed {
+    -fx-background-color: derive(-fx-accent, -20%);
+}
+
+#errorLabel {
+    -fx-text-fill: #ff4d4d;
+    -fx-font-size: 12px;
+}
+
+/* Styling for the main view table */
+.table-view {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-border-color: #555;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #2b2b2b;
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #555 transparent;
+    -fx-size: 40;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: -fx-light-text-color;
+    -fx-font-weight: bold;
+}
+
+.table-view .table-cell {
+    -fx-text-fill: -fx-light-text-color;
+    -fx-border-color: transparent transparent #555 transparent;
+    -fx-padding: 8px;
+}
+
+.table-view .table-row-cell:odd {
+    -fx-background-color: -fx-control-inner-background;
+}
+
+.table-view .table-row-cell:even {
+    -fx-background-color: derive(-fx-control-inner-background, 5%);
+}
+
+.table-view .table-row-cell:selected {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: #ffffff;
+}

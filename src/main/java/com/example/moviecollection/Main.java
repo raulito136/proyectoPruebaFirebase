@@ -32,7 +32,7 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         // Cierra el EntityManagerFactory al salir de la aplicación
-        DbManager.closeEmf();
+        DbManager.close();
         super.stop();
     }
 }

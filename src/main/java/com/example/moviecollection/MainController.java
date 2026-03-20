@@ -45,8 +45,9 @@ public class MainController {
     private void loadCopies() {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
+            Usuario managedUsuario = em.merge(this.usuario);
             TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.propietario = :usuario", Copia.class);
-            query.setParameter("usuario", usuario);
+            query.setParameter("usuario", managedUsuario);
             List<Copia> resultados = query.getResultList();
             listaCopias.setAll(resultados);
             copyTable.setItems(listaCopias);

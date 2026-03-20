@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.moviecollection.CopyController">
+   <children>
+      <TableView fx:id="copyTableView" layoutX="14.0" layoutY="14.0" prefHeight="329.0" prefWidth="572.0">
+        <columns>
+          <TableColumn fx:id="formatColumn" prefWidth="150.0" text="Formato" />
+          <TableColumn fx:id="locationColumn" prefWidth="150.0" text="Ubicación" />
+            <TableColumn fx:id="ownerColumn" prefWidth="150.0" text="Propietario" />
+        </columns>
+      </TableView>
+      <Button fx:id="addButton" layoutX="14.0" layoutY="357.0" mnemonicParsing="false" onAction="#addCopy" text="Añadir" />
+      <Button fx:id="editButton" layoutX="80.0" layoutY="357.0" mnemonicParsing="false" onAction="#editCopy" text="Editar" />
+      <Button fx:id="deleteButton" layoutX="140.0" layoutY="357.0" mnemonicParsing="false" onAction="#deleteCopy" text="Eliminar" />
+      <Button fx:id="backButton" layoutX="532.0" layoutY="357.0" mnemonicParsing="false" onAction="#back" text="Volver" />
+   </children>
+</AnchorPane>

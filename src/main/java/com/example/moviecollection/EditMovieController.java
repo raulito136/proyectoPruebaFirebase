@@ -30,7 +30,7 @@ public class EditMovieController {
         if (pelicula != null) {
             titleField.setText(pelicula.getTitulo());
             genreField.setText(pelicula.getGenero());
-            yearField.setText(String.valueOf(pelicula.getAno()));
+            yearField.setText(String.valueOf(pelicula.getAnoEstreno()));
             directorField.setText(pelicula.getDirector());
         }
     }
@@ -41,13 +41,12 @@ public class EditMovieController {
         em.getTransaction().begin();
 
         if (pelicula == null) {
-            // Nueva película
             pelicula = new Pelicula();
         }
 
         pelicula.setTitulo(titleField.getText());
         pelicula.setGenero(genreField.getText());
-        pelicula.setAno(Integer.parseInt(yearField.getText()));
+        pelicula.setAnoEstreno(Integer.parseInt(yearField.getText()));
         pelicula.setDirector(directorField.getText());
 
         em.merge(pelicula);

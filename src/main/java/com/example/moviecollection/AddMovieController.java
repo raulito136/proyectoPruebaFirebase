@@ -2,6 +2,7 @@ package com.example.moviecollection;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -18,6 +19,12 @@ public class AddMovieController {
     @FXML
     private TextField yearField;
 
+    @FXML
+    private TextField genreField;
+
+    @FXML
+    private TextArea descriptionArea;
+
     private AdminController adminController;
 
     public void setAdminController(AdminController adminController) {
@@ -29,14 +36,19 @@ public class AddMovieController {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
             em.getTransaction().begin();
-            Pelicula pelicula = new Pelicula();
-            pelicula.setTitulo(titleField.getText());
-            pelicula.setDirector(directorField.getText());
-            pelicula.setAno(Integer.parseInt(yearField.getText()));
+            Pelicula pelicula = new Pelicula(
+                    titleField.getText(),
+                    genreField.getText(),
+                    Integer.parseInt(yearField.getText()),
+                    descriptionArea.getText(),
+                    directorField.getText()
+            );
             em.persist(pelicula);
             em.getTransaction().commit();
 
-            adminController.loadMovies();
+            if (adminController != null) {
+                adminController.loadMovies();
+            }
 
             Stage stage = (Stage) titleField.getScene().getWindow();
             stage.close();

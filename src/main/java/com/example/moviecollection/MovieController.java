@@ -61,7 +61,7 @@ public class MovieController {
     public void initialize() {
         titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPelicula().getTitulo()));
         genreColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPelicula().getGenero()));
-        yearColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPelicula().getAno())));
+        yearColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPelicula().getAnoEstreno())));
         directorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPelicula().getDirector()));
     }
 
@@ -73,13 +73,14 @@ public class MovieController {
 
             AddCopyController controller = loader.getController();
             controller.setUsuario(usuario);
-            controller.setMovieController(this);
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Add Copy");
             stage.setScene(new Scene(root, 400, 350));
             stage.showAndWait();
+
+            loadCopies(); // Refresh the list after adding
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -101,14 +102,17 @@ public class MovieController {
             Parent root = loader.load();
 
             EditCopyController controller = loader.getController();
-            controller.setCopia(copia);
-            controller.setMovieController(this);
+            controller.setUsuario(this.usuario); // Pass the user
+            controller.setPelicula(copia.getPelicula()); // Pass the movie
+            controller.setCopia(copia); // Pass the copy to be edited
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setTitle("Edit Copy");
             stage.setScene(new Scene(root, 400, 250));
             stage.showAndWait();
+
+            loadCopies(); // Refresh the list after editing
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -137,7 +141,7 @@ public class MovieController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
             Parent root = loader.load();
-            
+
             MainController controller = loader.getController();
             controller.setUsuario(this.usuario);
 

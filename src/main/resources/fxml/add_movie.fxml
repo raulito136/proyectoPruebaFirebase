@@ -7,5 +7,7 @@
     <TextField fx:id="titleField" promptText="Title"/>
     <TextField fx:id="directorField" promptText="Director"/>
     <TextField fx:id="yearField" promptText="Year"/>
+    <TextField fx:id="genreField" promptText="Genre"/>
+    <TextArea fx:id="descriptionArea" promptText="Description"/>
     <Button text="Save" onAction="#saveMovie"/>
 </VBox>

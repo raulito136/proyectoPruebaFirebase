@@ -78,7 +78,7 @@ public class AddCopyController {
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No selection
+            alert.setTitle("No selection");
             alert.setHeaderText("No movie selected");
             alert.setContentText("Please select a movie from the table.");
             alert.showAndWait();

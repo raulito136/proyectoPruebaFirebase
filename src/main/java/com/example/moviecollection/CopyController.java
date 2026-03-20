@@ -39,17 +39,19 @@ public class CopyController {
     private Button backButton;
 
     private Pelicula pelicula;
+    private Usuario usuario;
 
-    public void setPelicula(Pelicula pelicula) {
+    public void setPeliculaAndUsuario(Pelicula pelicula, Usuario usuario) {
         this.pelicula = pelicula;
+        this.usuario = usuario;
         loadCopies();
     }
 
     private void loadCopies() {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
-            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.id_pelicula = :id_pelicula", Copia.class);
-            query.setParameter("id_pelicula", pelicula.getId());
+            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.pelicula = :pelicula", Copia.class);
+            query.setParameter("pelicula", pelicula);
             List<Copia> copias = query.getResultList();
             ObservableList<Copia> observableCopias = FXCollections.observableArrayList(copias);
             copyTableView.setItems(observableCopias);
@@ -59,17 +61,9 @@ public class CopyController {
     }
 
     public void initialize() {
-        formatColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getSoporte()));
+        formatColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFormato()));
         locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUbicacion()));
-        ownerColumn.setCellValueFactory(cellData -> {
-            EntityManager em = DbManager.getEmf().createEntityManager();
-            try {
-                Usuario usuario = em.find(Usuario.class, cellData.getValue().getId_usuario());
-                return new SimpleStringProperty(usuario.getNombre_usuario());
-            } finally {
-                em.close();
-            }
-        });
+        ownerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsuario().getNombre_usuario()));
     }
 
     @FXML
@@ -81,13 +75,14 @@ public class CopyController {
     private void editCopy() {
         Copia selectedCopia = copyTableView.getSelectionModel().getSelectedItem();
         if (selectedCopia != null) {
-            openEditCopyDialog(selectedCopia);
+            // Check if the current user owns the copy
+            if (selectedCopia.getUsuario().equals(this.usuario)) {
+                openEditCopyDialog(selectedCopia);
+            } else {
+                showAlert("Not Your Copy", "You can only edit your own copies.", "Please select one of your own copies to edit.");
+            }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Ninguna selección");
-            alert.setHeaderText("No se ha seleccionado ninguna copia");
-            alert.setContentText("Por favor, selecciona una copia de la tabla.");
-            alert.showAndWait();
+            showAlert("No selection", "No copy selected", "Please select a copy from the table.");
         }
     }
 
@@ -97,11 +92,17 @@ public class CopyController {
             Parent root = loader.load();
 
             EditCopyController controller = loader.getController();
-            controller.setCopy(copia, pelicula);
+            // Pass the user to the edit controller
+            controller.setUsuario(this.usuario);
+            // Set the copy, which can be null for a new copy
+            controller.setCopia(copia);
+             // Also pass the movie context
+            controller.setPelicula(this.pelicula);
+
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(copia == null ? "Añadir Copia" : "Editar Copia");
+            stage.setTitle(copia == null ? "Add Copy" : "Edit Copy");
             stage.setScene(new Scene(root, 400, 250));
             stage.showAndWait();
 
@@ -115,19 +116,21 @@ public class CopyController {
     private void deleteCopy() {
         Copia selectedCopia = copyTableView.getSelectionModel().getSelectedItem();
         if (selectedCopia != null) {
-            EntityManager em = DbManager.getEmf().createEntityManager();
-            em.getTransaction().begin();
-            em.remove(em.contains(selectedCopia) ? selectedCopia : em.merge(selectedCopia));
-            em.getTransaction().commit();
-            em.close();
-
-            loadCopies();
+            if (selectedCopia.getUsuario().equals(this.usuario)) {
+                EntityManager em = DbManager.getEmf().createEntityManager();
+                try {
+                    em.getTransaction().begin();
+                    em.remove(em.contains(selectedCopia) ? selectedCopia : em.merge(selectedCopia));
+                    em.getTransaction().commit();
+                } finally {
+                    em.close();
+                }
+                loadCopies();
+            } else {
+                showAlert("Not Your Copy", "You can only delete your own copies.", "Please select one of your own copies to delete.");
+            }
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Ninguna selección");
-            alert.setHeaderText("No se ha seleccionado ninguna copia");
-            alert.setContentText("Por favor, selecciona una copia de la tabla.");
-            alert.showAndWait();
+            showAlert("No selection", "No copy selected", "Please select a copy from the table.");
         }
     }
 
@@ -136,10 +139,23 @@ public class CopyController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/movie.fxml"));
             Parent root = loader.load();
+
+            // Pass the user back to the movie controller
+            MovieController controller = loader.getController();
+            controller.setUsuario(this.usuario);
+
             Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 400));
+            stage.setScene(new Scene(root, 800, 600));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }

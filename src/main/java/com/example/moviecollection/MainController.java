@@ -14,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainController {
 
@@ -33,25 +34,25 @@ public class MainController {
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
-        if (!usuario.isAdmin()) {
+        if (usuario != null && !usuario.isAdmin()) {
             manageMoviesButton.setVisible(false);
         }
         loadUserMovies();
     }
 
     private void loadUserMovies() {
+        if (usuario == null) return;
+
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
-            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.id_usuario = :id_usuario", Copia.class);
-            query.setParameter("id_usuario", usuario.getId());
-            List<Copia> copias = query.getResultList();
-
-            ObservableList<Pelicula> peliculas = FXCollections.observableArrayList();
-            for (Copia copia : copias) {
-                Pelicula pelicula = em.find(Pelicula.class, copia.getId_pelicula());
-                peliculas.add(pelicula);
-            }
-            movieListView.setItems(peliculas);
+            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.usuario = :usuario", Copia.class);
+            query.setParameter("usuario", usuario);
+            List<Pelicula> peliculas = query.getResultList().stream()
+                    .map(Copia::getPelicula)
+                    .distinct()
+                    .collect(Collectors.toList());
+            ObservableList<Pelicula> observablePeliculas = FXCollections.observableArrayList(peliculas);
+            movieListView.setItems(observablePeliculas);
         } finally {
             em.close();
         }
@@ -60,7 +61,10 @@ public class MainController {
     @FXML
     private void manageMovies() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/movie.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/movie.fxml"));
+            Parent root = loader.load();
+            MovieController controller = loader.getController();
+            controller.setUsuario(this.usuario);
             Stage stage = (Stage) manageMoviesButton.getScene().getWindow();
             stage.setScene(new Scene(root, 600, 400));
         } catch (IOException e) {

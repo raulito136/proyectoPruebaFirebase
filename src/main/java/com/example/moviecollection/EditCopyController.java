@@ -19,19 +19,25 @@ public class EditCopyController {
     @FXML
     private TextField locationField;
 
-    private Copia copia;
-
-    private MovieController movieController;
+    private Copia copia; // Can be null for a new copy
+    private Pelicula pelicula;
+    private Usuario usuario;
 
     public void setCopia(Copia copia) {
         this.copia = copia;
-        movieTitleLabel.setText(copia.getPelicula().getTitulo());
-        formatField.setText(copia.getFormato());
-        locationField.setText(copia.getUbicacion());
+        if (copia != null) {
+            formatField.setText(copia.getFormato());
+            locationField.setText(copia.getUbicacion());
+        }
     }
 
-    public void setMovieController(MovieController movieController) {
-        this.movieController = movieController;
+    public void setPelicula(Pelicula pelicula) {
+        this.pelicula = pelicula;
+        movieTitleLabel.setText(pelicula.getTitulo());
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 
     @FXML
@@ -39,17 +45,30 @@ public class EditCopyController {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
             em.getTransaction().begin();
-            Copia copiaToUpdate = em.find(Copia.class, copia.getId());
-            copiaToUpdate.setFormato(formatField.getText());
-            copiaToUpdate.setUbicacion(locationField.getText());
+            if (this.copia == null) {
+                // Create a new copy
+                Copia newCopy = new Copia();
+                newCopy.setFormato(formatField.getText());
+                newCopy.setUbicacion(locationField.getText());
+                newCopy.setUsuario(this.usuario);
+                newCopy.setPelicula(this.pelicula);
+                em.persist(newCopy);
+            } else {
+                // Update the existing copy
+                Copia copiaToUpdate = em.find(Copia.class, this.copia.getId());
+                copiaToUpdate.setFormato(formatField.getText());
+                copiaToUpdate.setUbicacion(locationField.getText());
+                em.merge(copiaToUpdate);
+            }
             em.getTransaction().commit();
-
-            movieController.refreshCopies();
 
             Stage stage = (Stage) movieTitleLabel.getScene().getWindow();
             stage.close();
         } finally {
             em.close();
         }
+    }
+
+    public void setCopy(Copia selectedCopia, Pelicula pelicula) {
     }
 }

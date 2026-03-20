@@ -13,14 +13,17 @@ public class Pelicula implements Serializable {
 
     private String titulo;
     private String genero;
-    private int anio;
+    private int anoEstreno;
     private String descripcion;
     private String director;
 
-    public Pelicula(String titulo, String genero, int anio, String descripcion, String director) {
+    // No-argument constructor required by JPA
+    public Pelicula() {}
+
+    public Pelicula(String titulo, String genero, int anoEstreno, String descripcion, String director) {
         this.titulo = titulo;
         this.genero = genero;
-        this.anio = anio;
+        this.anoEstreno = anoEstreno;
         this.descripcion = descripcion;
         this.director = director;
     }
@@ -45,12 +48,12 @@ public class Pelicula implements Serializable {
         this.genero = genero;
     }
 
-    public int getAnio() {
-        return anio;
+    public int getAnoEstreno() {
+        return anoEstreno;
     }
 
-    public void setAnio(int anio) {
-        this.anio = anio;
+    public void setAnoEstreno(int anoEstreno) {
+        this.anoEstreno = anoEstreno;
     }
 
     public String getDescripcion() {

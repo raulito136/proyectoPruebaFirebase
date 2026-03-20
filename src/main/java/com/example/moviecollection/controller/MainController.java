@@ -1,5 +1,8 @@
-package com.example.moviecollection;
+package com.example.moviecollection.controller;
 
+import com.example.moviecollection.model.Copia;
+import com.example.moviecollection.persistence.DbManager;
+import com.example.moviecollection.model.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

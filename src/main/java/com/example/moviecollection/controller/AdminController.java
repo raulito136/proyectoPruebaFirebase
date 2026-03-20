@@ -1,5 +1,8 @@
-package com.example.moviecollection;
+package com.example.moviecollection.controller;
 
+import com.example.moviecollection.persistence.DbManager;
+import com.example.moviecollection.model.Pelicula;
+import com.example.moviecollection.model.Usuario;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,7 +45,7 @@ public class AdminController {
     public void initialize() {
         titleColumn.setCellValueFactory(new PropertyValueFactory<>("titulo"));
         directorColumn.setCellValueFactory(new PropertyValueFactory<>("director"));
-        yearColumn.setCellValueFactory(new PropertyValueFactory<>("ano"));
+        yearColumn.setCellValueFactory(new PropertyValueFactory<>("anoEstreno"));
 
         loadMovies();
     }

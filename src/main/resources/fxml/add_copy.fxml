@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.example.moviecollection.AddCopyController"
+      fx:controller="com.example.moviecollection.controller.AddCopyController"
       spacing="15" alignment="CENTER" styleClass="root">
 
     <padding>

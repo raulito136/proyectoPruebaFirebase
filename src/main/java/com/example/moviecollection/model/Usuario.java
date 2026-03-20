@@ -1,4 +1,4 @@
-package com.example.moviecollection;
+package com.example.moviecollection.model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

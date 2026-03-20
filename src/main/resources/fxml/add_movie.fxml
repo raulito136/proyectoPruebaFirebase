@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.moviecollection.AddMovieController" spacing="10" style="-fx-padding: 10;">
+<VBox xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.moviecollection.controller.AddMovieController" spacing="10" style="-fx-padding: 10;">
     <TextField fx:id="titleField" promptText="Title"/>
     <TextField fx:id="directorField" promptText="Director"/>
     <TextField fx:id="yearField" promptText="Year"/>

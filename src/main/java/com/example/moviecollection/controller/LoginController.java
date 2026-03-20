@@ -1,5 +1,7 @@
-package com.example.moviecollection;
+package com.example.moviecollection.controller;
 
+import com.example.moviecollection.persistence.DbManager;
+import com.example.moviecollection.model.Usuario;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

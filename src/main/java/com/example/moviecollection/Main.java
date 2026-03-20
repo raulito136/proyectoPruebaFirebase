@@ -1,5 +1,6 @@
 package com.example.moviecollection;
 
+import com.example.moviecollection.persistence.DbManager;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

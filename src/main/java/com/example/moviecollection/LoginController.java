@@ -41,7 +41,7 @@ public class LoginController {
             // If no users exist, create a default 'admin' user
             if (em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList().isEmpty()) {
                 em.getTransaction().begin();
-                em.persist(new Usuario("admin", "admin"));
+                em.persist(new Usuario("admin", "admin", true));
                 em.getTransaction().commit();
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -56,7 +56,11 @@ public class LoginController {
             query.setParameter("contrasena", passwordField.getText());
             Usuario usuario = query.getSingleResult();
 
-            openMainWindow(usuario);
+            if (usuario.isAdmin()) {
+                openAdminWindow(usuario);
+            } else {
+                openMainWindow(usuario);
+            }
         } catch (NoResultException e) {
             errorLabel.setText("Nombre de usuario o contraseña incorrectos.");
         } finally {
@@ -70,6 +74,23 @@ public class LoginController {
             Parent root = loader.load();
 
             MainController controller = loader.getController();
+            controller.setUsuario(usuario);
+
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            Scene scene = new Scene(root, 800, 600);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            stage.setScene(scene);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openAdminWindow(Usuario usuario) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/admin.fxml"));
+            Parent root = loader.load();
+
+            AdminController controller = loader.getController();
             controller.setUsuario(usuario);
 
             Stage stage = (Stage) loginButton.getScene().getWindow();

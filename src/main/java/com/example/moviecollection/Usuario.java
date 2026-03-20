@@ -13,10 +13,12 @@ public class Usuario implements Serializable {
 
     private String nombre_usuario;
     private String contrasena;
+    private boolean admin;
 
-    public Usuario(String nombre_usuario, String contrasena) {
+    public Usuario(String nombre_usuario, String contrasena, boolean admin) {
         this.nombre_usuario = nombre_usuario;
         this.contrasena = contrasena;
+        this.admin = admin;
     }
 
     public long getId() {
@@ -37,5 +39,13 @@ public class Usuario implements Serializable {
 
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
+    }
+
+    public boolean isAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }

@@ -15,10 +15,9 @@
             <TableColumn fx:id="directorColumn" prefWidth="150.0" text="Director" />
         </columns>
       </TableView>
-      <Button fx:id="addButton" layoutX="14.0" layoutY="357.0" mnemonicParsing="false" onAction="#addMovie" text="Añadir" />
-      <Button fx:id="editButton" layoutX="80.0" layoutY="357.0" mnemonicParsing="false" onAction="#editMovie" text="Editar" />
-      <Button fx:id="deleteButton" layoutX="140.0" layoutY="357.0" mnemonicParsing="false" onAction="#deleteMovie" text="Eliminar" />
-      <Button fx:id="manageCopiesButton" layoutX="220.0" layoutY="357.0" mnemonicParsing="false" onAction="#manageCopies" text="Gestionar Copias" />
+      <Button fx:id="addCopyButton" layoutX="14.0" layoutY="357.0" mnemonicParsing="false" onAction="#addCopy" text="Añadir Copia" />
+      <Button fx:id="editCopyButton" layoutX="120.0" layoutY="357.0" mnemonicParsing="false" onAction="#editCopy" text="Editar Copia" />
+      <Button fx:id="deleteCopyButton" layoutX="220.0" layoutY="357.0" mnemonicParsing="false" onAction="#deleteCopy" text="Eliminar Copia" />
       <Button fx:id="backButton" layoutX="532.0" layoutY="357.0" mnemonicParsing="false" onAction="#back" text="Volver" />
    </children>
 </AnchorPane>

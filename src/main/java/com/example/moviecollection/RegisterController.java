@@ -52,7 +52,7 @@ public class RegisterController {
 
             // Create and persist the new user
             em.getTransaction().begin();
-            Usuario newUser = new Usuario(username, password);
+            Usuario newUser = new Usuario(username, password, false);
             em.persist(newUser);
             em.getTransaction().commit();
 

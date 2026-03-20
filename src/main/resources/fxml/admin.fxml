@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.moviecollection.AdminController">
+    <top>
+        <HBox spacing="10" style="-fx-padding: 10;">
+            <Button text="Add Movie" onAction="#addMovie"/>
+            <Button text="Delete Movie" onAction="#deleteMovie"/>
+        </HBox>
+    </top>
+    <center>
+        <TableView fx:id="movieTable">
+            <columns>
+                <TableColumn fx:id="titleColumn" text="Title"/>
+                <TableColumn fx:id="directorColumn" text="Director"/>
+                <TableColumn fx:id="yearColumn" text="Year"/>
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>

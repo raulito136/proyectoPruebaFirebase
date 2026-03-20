@@ -17,144 +17,150 @@ import javafx.stage.Stage;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.io.IOException;
-import java.util.List;
 
 public class MovieController {
 
     @FXML
-    private TableView<Pelicula> movieTableView;
+    private TableView<Copia> movieTableView;
     @FXML
-    private TableColumn<Pelicula, String> titleColumn;
+    private TableColumn<Copia, String> titleColumn;
     @FXML
-    private TableColumn<Pelicula, String> genreColumn;
+    private TableColumn<Copia, String> genreColumn;
     @FXML
-    private TableColumn<Pelicula, String> yearColumn;
+    private TableColumn<Copia, String> yearColumn;
     @FXML
-    private TableColumn<Pelicula, String> directorColumn;
+    private TableColumn<Copia, String> directorColumn;
     @FXML
-    private Button addButton;
+    private Button addCopyButton;
     @FXML
-    private Button editButton;
+    private Button editCopyButton;
     @FXML
-    private Button deleteButton;
-    @FXML
-    private Button manageCopiesButton;
+    private Button deleteCopyButton;
     @FXML
     private Button backButton;
 
-    private void loadMovies() {
+    private Usuario usuario;
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+        loadCopies();
+    }
+
+    private void loadCopies() {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
-            TypedQuery<Pelicula> query = em.createQuery("SELECT p FROM Pelicula p", Pelicula.class);
-            List<Pelicula> peliculas = query.getResultList();
-            ObservableList<Pelicula> observablePeliculas = FXCollections.observableArrayList(peliculas);
-            movieTableView.setItems(observablePeliculas);
+            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.id_usuario = :userId", Copia.class);
+            query.setParameter("userId", usuario.getId());
+            ObservableList<Copia> observableCopias = FXCollections.observableArrayList(query.getResultList());
+            movieTableView.setItems(observableCopias);
         } finally {
             em.close();
         }
     }
 
     public void initialize() {
-        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitulo()));
-        genreColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGenero()));
-        yearColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getAno())));
-        directorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getDirector()));
-
-        loadMovies();
+        titleColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPelicula().getTitulo()));
+        genreColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPelicula().getGenero()));
+        yearColumn.setCellValueFactory(cellData -> new SimpleStringProperty(String.valueOf(cellData.getValue().getPelicula().getAno())));
+        directorColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPelicula().getDirector()));
     }
 
     @FXML
-    private void addMovie() {
-        openEditMovieDialog(null);
-    }
-
-    @FXML
-    private void editMovie() {
-        Pelicula selectedPelicula = movieTableView.getSelectionModel().getSelectedItem();
-        if (selectedPelicula != null) {
-            openEditMovieDialog(selectedPelicula);
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Ninguna selección");
-            alert.setHeaderText("No se ha seleccionado ninguna película");
-            alert.setContentText("Por favor, selecciona una película de la tabla.");
-            alert.showAndWait();
-        }
-    }
-
-    private void openEditMovieDialog(Pelicula pelicula) {
+    private void addCopy() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit_movie.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/add_copy.fxml"));
             Parent root = loader.load();
 
-            EditMovieController controller = loader.getController();
-            controller.setPelicula(pelicula);
+            AddCopyController controller = loader.getController();
+            controller.setUsuario(usuario);
+            controller.setMovieController(this);
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(pelicula == null ? "Añadir Película" : "Editar Película");
-            stage.setScene(new Scene(root, 400, 250));
+            stage.setTitle("Add Copy");
+            stage.setScene(new Scene(root, 400, 350));
             stage.showAndWait();
 
-            loadMovies();
+            loadCopies();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @FXML
-    private void deleteMovie() {
-        Pelicula selectedPelicula = movieTableView.getSelectionModel().getSelectedItem();
-        if (selectedPelicula != null) {
-            EntityManager em = DbManager.getEmf().createEntityManager();
-            em.getTransaction().begin();
-            em.remove(em.contains(selectedPelicula) ? selectedPelicula : em.merge(selectedPelicula));
-            em.getTransaction().commit();
-            em.close();
-
-            loadMovies();
+    private void editCopy() {
+        Copia selectedCopia = movieTableView.getSelectionModel().getSelectedItem();
+        if (selectedCopia != null) {
+            openEditCopyDialog(selectedCopia);
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Ninguna selección");
-            alert.setHeaderText("No se ha seleccionado ninguna película");
-            alert.setContentText("Por favor, selecciona una película de la tabla.");
-            alert.showAndWait();
+            showAlert("No selection", "No copy selected", "Please select a copy from the table.");
+        }
+    }
+
+    private void openEditCopyDialog(Copia copia) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit_copy.fxml"));
+            Parent root = loader.load();
+
+            EditCopyController controller = loader.getController();
+            controller.setCopia(copia);
+            controller.setMovieController(this);
+
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Edit Copy");
+            stage.setScene(new Scene(root, 400, 250));
+            stage.showAndWait();
+
+            loadCopies();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     @FXML
-    private void manageCopies() {
-        Pelicula selectedPelicula = movieTableView.getSelectionModel().getSelectedItem();
-        if (selectedPelicula != null) {
+    private void deleteCopy() {
+        Copia selectedCopia = movieTableView.getSelectionModel().getSelectedItem();
+        if (selectedCopia != null) {
+            EntityManager em = DbManager.getEmf().createEntityManager();
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/copy.fxml"));
-                Parent root = loader.load();
-
-                CopyController controller = loader.getController();
-                controller.setPelicula(selectedPelicula);
-
-                Stage stage = (Stage) manageCopiesButton.getScene().getWindow();
-                stage.setScene(new Scene(root, 600, 400));
-            } catch (IOException e) {
-                e.printStackTrace();
+                em.getTransaction().begin();
+                em.remove(em.contains(selectedCopia) ? selectedCopia : em.merge(selectedCopia));
+                em.getTransaction().commit();
+            } finally {
+                em.close();
             }
+            loadCopies();
         } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("Ninguna selección");
-            alert.setHeaderText("No se ha seleccionado ninguna película");
-            alert.setContentText("Por favor, selecciona una película de la tabla.");
-            alert.showAndWait();
+            showAlert("No selection", "No copy selected", "Please select a copy from the table.");
         }
     }
 
     @FXML
     private void back() {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/main.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/main.fxml"));
+            Parent root = loader.load();
+            
+            MainController controller = loader.getController();
+            controller.setUsuario(this.usuario);
+
             Stage stage = (Stage) backButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 600, 400));
+            stage.setScene(new Scene(root, 800, 600));
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void showAlert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    public void refreshCopies() {
+        loadCopies();
     }
 }

@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 
-<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.moviecollection.AddCopyController"
-      spacing="10" alignment="CENTER" styleClass="root">
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.moviecollection.AddCopyController"
+      spacing="15" alignment="CENTER" styleClass="root">
 
-    <Label text="Añadir Copia" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
 
-    <TableView fx:id="movieTable">
+    <Label text="Añadir Nueva Copia" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="movieTable" prefHeight="200">
         <columns>
             <TableColumn fx:id="titleColumn" text="Título"/>
             <TableColumn fx:id="directorColumn" text="Director"/>
@@ -21,8 +28,11 @@
         </columns>
     </TableView>
 
-    <ComboBox fx:id="formatComboBox" promptText="Formato"/>
-    <ComboBox fx:id="supportComboBox" promptText="Soporte"/>
+    <HBox spacing="10" alignment="CENTER">
+        <ComboBox fx:id="formatComboBox" promptText="Formato" prefWidth="150"/>
+        <ComboBox fx:id="stateComboBox" promptText="Estado" prefWidth="150"/>
+    </HBox>
 
-    <Button text="Añadir Copia" onAction="#addCopy"/>
+    <Button text="Añadir Copia" onAction="#addCopy" prefWidth="120"/>
+
 </VBox>

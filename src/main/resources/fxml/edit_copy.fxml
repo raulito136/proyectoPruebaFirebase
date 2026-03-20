@@ -3,9 +3,20 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.moviecollection.EditCopyController" spacing="10" style="-fx-padding: 10;">
-    <Label fx:id="movieTitleLabel"/>
-    <TextField fx:id="formatField" promptText="Format"/>
-    <TextField fx:id="locationField" promptText="Location"/>
-    <Button text="Save" onAction="#saveCopy"/>
+<VBox xmlns="http://javafx.com/javafx/17.0.2-ea"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.example.moviecollection.EditCopyController"
+      spacing="10" style="-fx-padding: 20; -fx-alignment: center;">
+
+    <Label text="Editar Detalles de Copia" style="-fx-font-weight: bold;"/>
+    <Label fx:id="movieTitleLabel" text="Película"/>
+
+    <ComboBox fx:id="formatComboBox" promptText="Selecciona Formato" maxWidth="Infinity"/>
+
+    <ComboBox fx:id="stateComboBox" promptText="Selecciona Estado" maxWidth="Infinity"/>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Guardar" onAction="#saveCopy"/>
+        <Button text="Cancelar" onAction="#cancel"/>
+    </HBox>
 </VBox>

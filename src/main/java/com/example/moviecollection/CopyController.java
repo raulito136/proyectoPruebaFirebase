@@ -25,8 +25,10 @@ public class CopyController {
     private TableView<Copia> copyTableView;
     @FXML
     private TableColumn<Copia, String> formatColumn;
+
     @FXML
-    private TableColumn<Copia, String> locationColumn;
+    private TableColumn<Copia, String> stateColumn;
+
     @FXML
     private TableColumn<Copia, String> ownerColumn;
     @FXML
@@ -61,9 +63,15 @@ public class CopyController {
     }
 
     public void initialize() {
-        formatColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFormato()));
-        locationColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUbicacion()));
-        ownerColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUsuario().getNombre_usuario()));
+        formatColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getFormato()));
+
+        // Nueva lógica para la columna de estado
+        stateColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getEstado()));
+
+        ownerColumn.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getUsuario().getNombre_usuario()));
     }
 
     @FXML
@@ -75,14 +83,14 @@ public class CopyController {
     private void editCopy() {
         Copia selectedCopia = copyTableView.getSelectionModel().getSelectedItem();
         if (selectedCopia != null) {
-            // Check if the current user owns the copy
+            // Verifica si el usuario actual es el dueño de la copia
             if (selectedCopia.getUsuario().equals(this.usuario)) {
                 openEditCopyDialog(selectedCopia);
             } else {
-                showAlert("Not Your Copy", "You can only edit your own copies.", "Please select one of your own copies to edit.");
+                showAlert("No es tu copia", "Solo puedes editar tus propias copias.", "Por favor, selecciona una copia que te pertenezca.");
             }
         } else {
-            showAlert("No selection", "No copy selected", "Please select a copy from the table.");
+            showAlert("Sin selección", "No hay copia seleccionada", "Por favor, selecciona una copia de la tabla.");
         }
     }
 
@@ -92,17 +100,13 @@ public class CopyController {
             Parent root = loader.load();
 
             EditCopyController controller = loader.getController();
-            // Pass the user to the edit controller
             controller.setUsuario(this.usuario);
-            // Set the copy, which can be null for a new copy
             controller.setCopia(copia);
-             // Also pass the movie context
             controller.setPelicula(this.pelicula);
-
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setTitle(copia == null ? "Add Copy" : "Edit Copy");
+            stage.setTitle(copia == null ? "Añadir Copia" : "Editar Copia");
             stage.setScene(new Scene(root, 400, 250));
             stage.showAndWait();
 
@@ -127,10 +131,10 @@ public class CopyController {
                 }
                 loadCopies();
             } else {
-                showAlert("Not Your Copy", "You can only delete your own copies.", "Please select one of your own copies to delete.");
+                showAlert("No es tu copia", "Solo puedes borrar tus propias copias.", "Selecciona una copia que te pertenezca para borrarla.");
             }
         } else {
-            showAlert("No selection", "No copy selected", "Please select a copy from the table.");
+            showAlert("Sin selección", "No hay copia seleccionada", "Por favor, selecciona una copia de la tabla.");
         }
     }
 
@@ -140,7 +144,6 @@ public class CopyController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/movie.fxml"));
             Parent root = loader.load();
 
-            // Pass the user back to the movie controller
             MovieController controller = loader.getController();
             controller.setUsuario(this.usuario);
 

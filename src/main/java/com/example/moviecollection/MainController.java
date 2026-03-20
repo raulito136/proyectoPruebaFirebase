@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
@@ -21,7 +22,7 @@ public class MainController {
     @FXML private TableView<Copia> copyTable;
     @FXML private TableColumn<Copia, String> movieTitleColumn;
     @FXML private TableColumn<Copia, String> formatColumn;
-    @FXML private TableColumn<Copia, Soporte> supportColumn;
+    @FXML private TableColumn<Copia, String> supportColumn;
     @FXML private TableColumn<Copia, Integer> quantityColumn;
     @FXML private MenuBar menuBar;
 
@@ -30,11 +31,18 @@ public class MainController {
 
     @FXML
     private void initialize() {
+        // Título (vía Película)
         movieTitleColumn.setCellValueFactory(cellData ->
                 new javafx.beans.property.SimpleStringProperty(cellData.getValue().getPelicula().getTitulo())
         );
+
+        // Formato
         formatColumn.setCellValueFactory(new PropertyValueFactory<>("formato"));
-        supportColumn.setCellValueFactory(new PropertyValueFactory<>("soporte"));
+
+        // NUEVO: Conectar la columna de soporte con el atributo 'estado' de la clase Copia
+        supportColumn.setCellValueFactory(new PropertyValueFactory<>("estado"));
+
+        // NUEVO: Conectar la columna de cantidad con el atributo 'cantidad' de la clase Copia
         quantityColumn.setCellValueFactory(new PropertyValueFactory<>("cantidad"));
     }
 
@@ -49,12 +57,27 @@ public class MainController {
     private void loadCopies() {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
-            TypedQuery<Copia> query = em.createQuery("SELECT c FROM Copia c WHERE c.usuario = :usuario", Copia.class);
-            query.setParameter("usuario", usuario);
+            // 1. IMPORTANTE: 'merge' devuelve una NUEVA instancia gestionada.
+            // Debemos usar esa instancia en la consulta.
+            Usuario usuarioGestionado = em.merge(this.usuario);
+
+            // 2. Asegúrate de que la consulta use el nombre de atributo correcto 'usuario'
+            TypedQuery<Copia> query = em.createQuery(
+                    "SELECT c FROM Copia c WHERE c.usuario = :user", Copia.class);
+
+            // 3. Pasamos el usuario gestionado (el que devolvió el merge)
+            query.setParameter("user", usuarioGestionado);
+
             List<Copia> resultados = query.getResultList();
+
+            // 4. Actualizar la lista en el hilo de JavaFX
             listaCopias.setAll(resultados);
             copyTable.setItems(listaCopias);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
+            // 5. Siempre cerrar el EntityManager
             em.close();
         }
     }
@@ -93,5 +116,69 @@ public class MainController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void editCopy() {
+        Copia selectedCopia = copyTable.getSelectionModel().getSelectedItem();
+        if (selectedCopia != null) {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/edit_copy.fxml"));
+                Parent root = loader.load();
+
+                EditCopyController controller = loader.getController();
+                controller.setUsuario(this.usuario); //
+                controller.setPelicula(selectedCopia.getPelicula()); //
+                controller.setCopia(selectedCopia); //
+
+                Stage stage = new Stage();
+                stage.setTitle("Editar Copia");
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setScene(new Scene(root));
+                stage.showAndWait();
+
+                loadCopies(); // Refrescar tabla tras editar
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            mostrarAlerta("Atención", "Selecciona una copia para editar.");
+        }
+    }
+
+    @FXML
+    private void deleteCopy() {
+        Copia selectedCopia = copyTable.getSelectionModel().getSelectedItem();
+        if (selectedCopia != null) {
+            EntityManager em = DbManager.getEmf().createEntityManager();
+            try {
+                em.getTransaction().begin();
+                // Buscamos la instancia gestionada
+                Copia copiaEnBase = em.find(Copia.class, selectedCopia.getId());
+
+                if (copiaEnBase.getCantidad() > 1) {
+                    // Si hay varias, restamos una unidad
+                    copiaEnBase.setCantidad(copiaEnBase.getCantidad() - 1);
+                    em.merge(copiaEnBase);
+                } else {
+                    // Si solo queda una, eliminamos el registro
+                    em.remove(copiaEnBase);
+                }
+
+                em.getTransaction().commit();
+                loadCopies(); // Refrescar la tabla
+            } finally {
+                em.close();
+            }
+        } else {
+            mostrarAlerta("Atención", "Selecciona una copia para eliminar.");
+        }
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(titulo);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }

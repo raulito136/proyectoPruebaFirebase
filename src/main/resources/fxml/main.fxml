@@ -5,6 +5,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.Menu?>
@@ -16,23 +17,33 @@
     <children>
         <MenuBar fx:id="menuBar">
             <menus>
-                <Menu text="File">
+                <Menu text="Archivo">
                     <items>
-                        <MenuItem text="Logout" onAction="#logout"/>
+                        <MenuItem text="Cerrar sesión" onAction="#logout"/>
                     </items>
                 </Menu>
             </menus>
         </MenuBar>
+
         <Label fx:id="welcomeLabel" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
         <TableView fx:id="copyTable" VBox.vgrow="ALWAYS">
             <columns>
                 <TableColumn fx:id="movieTitleColumn" text="Título Película" prefWidth="200"/>
                 <TableColumn fx:id="formatColumn" text="Formato" prefWidth="100"/>
-                <TableColumn fx:id="supportColumn" text="Soporte" prefWidth="100"/>
+                <TableColumn fx:id="supportColumn" text="Estado" prefWidth="100"/>
                 <TableColumn fx:id="quantityColumn" text="Cantidad" prefWidth="100"/>
             </columns>
         </TableView>
-        <Button text="Añadir Copia" onAction="#addCopy" styleClass="button"/>
+
+        <HBox spacing="10" alignment="CENTER">
+            <padding>
+                <Insets top="10" bottom="10"/>
+            </padding>
+            <Button text="Añadir Copia" onAction="#addCopy" styleClass="button"/>
+            <Button text="Editar Seleccionada" onAction="#editCopy" styleClass="button"/>
+            <Button text="Eliminar (Restar 1)" onAction="#deleteCopy" styleClass="button"/>
+        </HBox>
     </children>
 
     <padding>

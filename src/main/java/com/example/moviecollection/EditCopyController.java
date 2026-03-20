@@ -1,12 +1,15 @@
 package com.example.moviecollection;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class EditCopyController {
 
@@ -14,30 +17,40 @@ public class EditCopyController {
     private Label movieTitleLabel;
 
     @FXML
-    private TextField formatField;
+    private ComboBox<String> formatComboBox; // Corregido: Coincide con el fx:id del FXML
 
     @FXML
-    private TextField locationField;
+    private ComboBox<String> stateComboBox;
 
-    private Copia copia; // Can be null for a new copy
+    private Copia copia;
     private Pelicula pelicula;
     private Usuario usuario;
 
-    public void setCopia(Copia copia) {
-        this.copia = copia;
-        if (copia != null) {
-            formatField.setText(copia.getFormato());
-            locationField.setText(copia.getUbicacion());
-        }
-    }
-
-    public void setPelicula(Pelicula pelicula) {
-        this.pelicula = pelicula;
-        movieTitleLabel.setText(pelicula.getTitulo());
+    @FXML
+    public void initialize() {
+        // Configuramos las opciones de los desplegables
+        formatComboBox.setItems(FXCollections.observableArrayList("DVD", "Blu-ray", "Digital", "VHS"));
+        stateComboBox.setItems(FXCollections.observableArrayList("Nuevo", "Usado", "Bueno", "Dañado"));
     }
 
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public void setPelicula(Pelicula pelicula) {
+        this.pelicula = pelicula;
+        if (pelicula != null) {
+            movieTitleLabel.setText(pelicula.getTitulo());
+        }
+    }
+
+    public void setCopia(Copia copia) {
+        this.copia = copia;
+        if (copia != null) {
+            // Corregido: Usamos formatComboBox y setValue
+            formatComboBox.setValue(copia.getFormato());
+            stateComboBox.setValue(copia.getEstado());
+        }
     }
 
     @FXML
@@ -45,30 +58,54 @@ public class EditCopyController {
         EntityManager em = DbManager.getEmf().createEntityManager();
         try {
             em.getTransaction().begin();
-            if (this.copia == null) {
-                // Create a new copy
-                Copia newCopy = new Copia();
-                newCopy.setFormato(formatField.getText());
-                newCopy.setUbicacion(locationField.getText());
-                newCopy.setUsuario(this.usuario);
-                newCopy.setPelicula(this.pelicula);
-                em.persist(newCopy);
+
+            String nuevoFormato = formatComboBox.getValue();
+            String nuevoEstado = stateComboBox.getValue();
+
+            // Usamos <> en lugar de != para evitar errores de sintaxis en JPQL
+            TypedQuery<Copia> query = em.createQuery(
+                    "SELECT c FROM Copia c WHERE c.pelicula = :p AND c.usuario = :u " +
+                            "AND c.formato = :f AND c.estado = :e AND c.id <> :idActual", Copia.class);
+
+            query.setParameter("p", em.merge(this.pelicula));
+            query.setParameter("u", em.merge(this.usuario));
+            query.setParameter("f", nuevoFormato);
+            query.setParameter("e", nuevoEstado);
+            query.setParameter("idActual", this.copia.getId());
+
+            List<Copia> duplicados = query.getResultList();
+
+            if (!duplicados.isEmpty()) {
+                Copia copiaExistente = duplicados.get(0);
+                Copia copiaSiendoEditada = em.find(Copia.class, this.copia.getId());
+
+                copiaExistente.setCantidad(copiaExistente.getCantidad() + copiaSiendoEditada.getCantidad());
+                em.remove(copiaSiendoEditada);
+                em.merge(copiaExistente);
             } else {
-                // Update the existing copy
                 Copia copiaToUpdate = em.find(Copia.class, this.copia.getId());
-                copiaToUpdate.setFormato(formatField.getText());
-                copiaToUpdate.setUbicacion(locationField.getText());
+                copiaToUpdate.setFormato(nuevoFormato);
+                copiaToUpdate.setEstado(nuevoEstado);
                 em.merge(copiaToUpdate);
             }
-            em.getTransaction().commit();
 
-            Stage stage = (Stage) movieTitleLabel.getScene().getWindow();
-            stage.close();
+            em.getTransaction().commit();
+            closeWindow();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) em.getTransaction().rollback();
+            e.printStackTrace();
         } finally {
             em.close();
         }
     }
 
-    public void setCopy(Copia selectedCopia, Pelicula pelicula) {
+    @FXML
+    void cancel(ActionEvent event) {
+        closeWindow();
+    }
+
+    private void closeWindow() {
+        Stage stage = (Stage) movieTitleLabel.getScene().getWindow();
+        stage.close();
     }
 }

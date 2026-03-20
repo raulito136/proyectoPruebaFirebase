@@ -18,66 +18,33 @@ public class Copia implements Serializable {
     private Usuario usuario;
 
     private String formato;
-    private Soporte soporte;
+
+    // Cambiamos Soporte por Estado
+    private String estado;
 
     private int cantidad;
 
-    public Copia() {
-        // Default constructor
-    }
+    public Copia() {}
 
-    public Copia(Pelicula pelicula, Usuario usuario, String formato, Soporte soporte) {
+    public Copia(Pelicula pelicula, Usuario usuario, String formato, String estado) {
         this.pelicula = pelicula;
         this.usuario = usuario;
         this.formato = formato;
-        this.soporte = soporte;
+        this.estado = estado;
         this.cantidad = 1;
     }
 
-    public long getId() {
-        return id;
-    }
+    // Getters y Setters actualizados
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
 
-    public Pelicula getPelicula() {
-        return pelicula;
-    }
-
-    public void setPelicula(Pelicula pelicula) {
-        this.pelicula = pelicula;
-    }
-
-    public Usuario getUsuario() {
-        return usuario;
-    }
-
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
-
-    public String getFormato() {
-        return formato;
-    }
-
-    public void setFormato(String formato) {
-        this.formato = formato;
-    }
-
-    public Soporte getSoporte() {
-        return soporte;
-    }
-
-    public void setSoporte(Soporte soporte) {
-        this.soporte = soporte;
-    }
-    public int getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
-    }
-
-    public void aumentarCantidad() {
-        this.cantidad++;
-    }
+    public long getId() { return id; }
+    public Pelicula getPelicula() { return pelicula; }
+    public void setPelicula(Pelicula pelicula) { this.pelicula = pelicula; }
+    public Usuario getUsuario() { return usuario; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    public String getFormato() { return formato; }
+    public void setFormato(String formato) { this.formato = formato; }
+    public int getCantidad() { return cantidad; }
+    public void setCantidad(int cantidad) { this.cantidad = cantidad; }
 }

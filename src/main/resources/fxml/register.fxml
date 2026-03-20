@@ -6,6 +6,7 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.CheckBox?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.moviecollection.RegisterController"
       spacing="15" alignment="CENTER" styleClass="root">
@@ -25,6 +26,8 @@
         <Label text="Contraseña:"/>
         <PasswordField fx:id="passwordField" promptText="Elija una contraseña"/>
     </VBox>
+
+    <CheckBox fx:id="adminCheckBox" text="¿Es administrador?" />
 
     <Label fx:id="errorLabel" styleClass="error-label"/>
 

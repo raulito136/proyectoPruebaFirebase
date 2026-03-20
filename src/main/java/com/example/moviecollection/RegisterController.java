@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.io.IOException;
+import javafx.scene.control.CheckBox;
 
 public class RegisterController {
 
@@ -25,6 +26,9 @@ public class RegisterController {
     @FXML
     private Label errorLabel;
 
+    @FXML
+    private CheckBox adminCheckBox;
+
     // Se ha eliminado la línea que creaba una base de datos diferente ($objectdb/db/database.odb)
 
     @FXML
@@ -34,6 +38,7 @@ public class RegisterController {
         try {
             String username = usernameField.getText();
             String password = passwordField.getText();
+            boolean isAdmin = adminCheckBox.isSelected();
 
             if (username.isEmpty() || password.isEmpty()) {
                 errorLabel.setText("El nombre de usuario y la contraseña no pueden estar vacíos.");
@@ -51,7 +56,7 @@ public class RegisterController {
 
             // Crear y persistir el nuevo usuario
             em.getTransaction().begin();
-            Usuario newUser = new Usuario(username, password, false);
+            Usuario newUser = new Usuario(username, password, isAdmin);
             em.persist(newUser);
             em.getTransaction().commit();
 

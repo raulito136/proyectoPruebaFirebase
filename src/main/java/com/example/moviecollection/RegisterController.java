@@ -11,8 +11,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 import java.io.IOException;
 
@@ -27,11 +25,12 @@ public class RegisterController {
     @FXML
     private Label errorLabel;
 
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("$objectdb/db/database.odb");
+    // Se ha eliminado la línea que creaba una base de datos diferente ($objectdb/db/database.odb)
 
     @FXML
     void register(ActionEvent event) {
-        EntityManager em = emf.createEntityManager();
+        // Ahora usamos el DbManager centralizado para conectar a la base de datos correcta
+        EntityManager em = DbManager.getEmf().createEntityManager();
         try {
             String username = usernameField.getText();
             String password = passwordField.getText();
@@ -41,7 +40,7 @@ public class RegisterController {
                 return;
             }
 
-            // Check if user already exists
+            // Verificar si el usuario ya existe en la base de datos unificada
             TypedQuery<Usuario> query = em.createQuery("SELECT u FROM Usuario u WHERE u.nombre_usuario = :username", Usuario.class);
             query.setParameter("username", username);
 
@@ -50,13 +49,13 @@ public class RegisterController {
                 return;
             }
 
-            // Create and persist the new user
+            // Crear y persistir el nuevo usuario
             em.getTransaction().begin();
             Usuario newUser = new Usuario(username, password, false);
             em.persist(newUser);
             em.getTransaction().commit();
 
-            // Go back to login screen after successful registration
+            // Volver a la pantalla de login tras el éxito
             goToLogin(event);
 
         } finally {

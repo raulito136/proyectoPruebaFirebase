@@ -29,8 +29,8 @@
     <Label fx:id="errorLabel" styleClass="error-label"/>
 
     <VBox spacing="10" alignment="CENTER">
-        <Button text="Login" onAction="#login" prefWidth="200"/>
+        <Button fx:id="loginButton" text="Login" onAction="#login" prefWidth="200"/>
         <Button text="Registrarse" onAction="#goToRegister" prefWidth="200"/>
-        <Button text="Cerrar" onAction="#close" prefWidth="200"/>
+        <Button fx:id="closeButton" text="Cerrar" onAction="#close" prefWidth="200"/>
     </VBox>
 </VBox>

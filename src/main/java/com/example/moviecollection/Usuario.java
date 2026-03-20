@@ -20,6 +20,10 @@ public class Usuario implements Serializable {
         this.contrasena = contrasena;
         this.admin = admin;
     }
+    public Usuario() {
+        // Default constructor
+    }
+
 
     public long getId() {
         return id;

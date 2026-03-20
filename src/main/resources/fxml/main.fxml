@@ -43,7 +43,7 @@
                 <TextField fx:id="genreField" promptText="Género" HBox.hgrow="ALWAYS"/>
             </HBox>
             <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Button text="Añadir" onAction="#addMovie"/>
+                <Button text="Añadir" onAction="#manageMovies"/>
                 <Button text="Actualizar" onAction="#updateMovie"/>
                 <Button text="Eliminar" onAction="#deleteMovie"/>
                 <Button text="Limpiar" onAction="#clearForm"/>

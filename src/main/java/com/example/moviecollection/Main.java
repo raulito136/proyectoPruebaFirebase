@@ -18,7 +18,7 @@ public class Main extends Application {
         Parent root = loader.load();
         primaryStage.setTitle("Movie Collection");
 
-        Scene scene = new Scene(root, 350, 300);
+        Scene scene = new Scene(root, 550, 400);
         // Aplicar la hoja de estilos a la escena de login
         scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
 

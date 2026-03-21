@@ -71,7 +71,7 @@ public class AdminController {
             controller.setAdminController(this);
 
             Stage stage = new Stage();
-            Scene scene = new Scene(root, 300, 200);
+            Scene scene = new Scene(root, 500, 400);
             scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
             stage.setScene(scene);
             stage.show();

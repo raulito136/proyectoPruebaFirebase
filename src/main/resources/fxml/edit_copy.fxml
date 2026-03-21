@@ -6,7 +6,7 @@
 <VBox xmlns="http://javafx.com/javafx/17.0.2-ea"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.example.moviecollection.controller.EditCopyController"
-      spacing="10" style="-fx-padding: 20; -fx-alignment: center;">
+      spacing="10" style="-fx-padding: 20; -fx-alignment: center;" styleClass="root" prefWidth="600" prefHeight="400">
 
     <Label text="Editar Detalles de Copia" style="-fx-font-weight: bold;"/>
     <Label fx:id="movieTitleLabel" text="Película"/>

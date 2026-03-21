@@ -21,10 +21,10 @@
 
     <TableView fx:id="movieTable" prefHeight="200">
         <columns>
-            <TableColumn fx:id="titleColumn" text="Título"/>
-            <TableColumn fx:id="directorColumn" text="Director"/>
-            <TableColumn fx:id="yearColumn" text="Año"/>
-            <TableColumn fx:id="genreColumn" text="Género"/>
+            <TableColumn fx:id="titleColumn" text="Título" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="directorColumn" text="Director" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="yearColumn" text="Año" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="genreColumn" text="Género" style="-fx-alignment: CENTER;"/>
         </columns>
         <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

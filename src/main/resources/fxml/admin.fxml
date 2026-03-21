@@ -8,14 +8,15 @@
         <HBox spacing="10" style="-fx-padding: 10;">
             <Button text="Add Movie" onAction="#addMovie"/>
             <Button text="Delete Movie" onAction="#deleteMovie"/>
+            <Button text="Logout" onAction="#logout"/>
         </HBox>
     </top>
     <center>
         <TableView fx:id="movieTable">
             <columns>
-                <TableColumn fx:id="titleColumn" text="Title"/>
-                <TableColumn fx:id="directorColumn" text="Director"/>
-                <TableColumn fx:id="yearColumn" text="Year"/>
+                <TableColumn fx:id="titleColumn" text="Title" style="-fx-alignment: CENTER;"/>
+                <TableColumn fx:id="directorColumn" text="Director" style="-fx-alignment: CENTER;"/>
+                <TableColumn fx:id="yearColumn" text="Year" style="-fx-alignment: CENTER;"/>
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

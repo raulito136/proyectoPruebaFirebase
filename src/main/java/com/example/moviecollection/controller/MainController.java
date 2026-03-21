@@ -96,7 +96,9 @@ public class MainController {
 
             Stage stage = new Stage();
             stage.setTitle("Añadir Copia");
-            stage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            stage.setScene(scene);
             stage.showAndWait();
             loadCopies();
         } catch (IOException e) {
@@ -114,7 +116,9 @@ public class MainController {
             Parent root = loader.load();
             Stage loginStage = new Stage();
             loginStage.setTitle("Login");
-            loginStage.setScene(new Scene(root));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            loginStage.setScene(scene);
             loginStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -137,7 +141,9 @@ public class MainController {
                 Stage stage = new Stage();
                 stage.setTitle("Editar Copia");
                 stage.initModality(Modality.APPLICATION_MODAL);
-                stage.setScene(new Scene(root));
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+                stage.setScene(scene);
                 stage.showAndWait();
 
                 loadCopies(); // Refrescar tabla tras editar

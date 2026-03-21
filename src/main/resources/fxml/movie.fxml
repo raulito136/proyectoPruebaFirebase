@@ -14,6 +14,9 @@
             <TableColumn fx:id="yearColumn" prefWidth="75.0" text="Año" />
             <TableColumn fx:id="directorColumn" prefWidth="150.0" text="Director" />
         </columns>
+         <columnResizePolicy>
+            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+         </columnResizePolicy>
       </TableView>
       <Button fx:id="addCopyButton" layoutX="14.0" layoutY="357.0" mnemonicParsing="false" onAction="#addCopy" text="Añadir Copia" />
       <Button fx:id="editCopyButton" layoutX="120.0" layoutY="357.0" mnemonicParsing="false" onAction="#editCopy" text="Editar Copia" />

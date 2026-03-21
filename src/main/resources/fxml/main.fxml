@@ -12,7 +12,7 @@
 <?import javafx.scene.control.MenuItem?>
 
 <VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.moviecollection.controller.MainController"
-      spacing="10" alignment="TOP_CENTER" styleClass="root">
+      spacing="10" alignment="TOP_CENTER" styleClass="root" prefWidth="800" prefHeight="600">
 
     <children>
         <MenuBar fx:id="menuBar">
@@ -34,6 +34,9 @@
                 <TableColumn fx:id="supportColumn" text="Estado" prefWidth="100"/>
                 <TableColumn fx:id="quantityColumn" text="Cantidad" prefWidth="100"/>
             </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
         </TableView>
 
         <HBox spacing="10" alignment="CENTER">
